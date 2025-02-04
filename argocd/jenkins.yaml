@@ -1,0 +1,14 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: jenkins
+  namespace: argocd
+  resourceVersion: "3335057"
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    chart: jenkins-helm
+    repoURL: https://arthurf-java.github.io/helm-jenkins
+    targetRevision: 0.1.0
