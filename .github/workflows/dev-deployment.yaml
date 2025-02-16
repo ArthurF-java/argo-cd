@@ -1,11 +1,17 @@
 name: Trigger ArgoCD Sync
 
+#on:
+#  push:
+#    branches:
+#      - main
+#    paths:
+#      - 'dev/**'
+
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'dev/**'
+  workflow_dispatch:
+    inputs:
+      button_name:
+        description: 'Setup KinD'
 
 jobs:
   trigger-argocd:
@@ -19,21 +25,59 @@ jobs:
         run: |
           echo "178.124.206.53	argocd.k8s-15.sa" | sudo tee -a /etc/hosts
 
-      - name: Trigger ArgoCD Sync
-        env:
-          ARGOCD_SERVER: ${{ vars.ARGOCD_SERVER }}
-          ARGOCD_TOKEN: ${{ secrets.ARGOCD_TOKEN }}
-          ARGOCD_APP_NAME: ${{ vars.ARGOCD_DEV_APP_NAME }}
-        run: |
-          response_code=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
-            -H "Authorization: Bearer $ARGOCD_TOKEN" \
-            -H "Content-Type: application/json" \
-            "$ARGOCD_SERVER/api/v1/applications/$ARGOCD_APP_NAME/sync" \
-            -d '{}')
+      - name: read-yaml-file
+        uses: pietrobolcato/action-read-yaml@1.0.0
+        id: read_action_js
+        with:
+          config: ${{ github.workspace }}/examples/config_example.yaml
 
-          if [ "$response_code" -ne 200 ]; then
-            echo "Error: ArgoCD sync failed with HTTP status code $response_code"
-            exit 1
-          else
-            echo "ArgoCD sync triggered successfully"
-          fi
+      - name: use-yaml-file
+          run: |
+            echo namespace: ${{ steps.read_action_js.outputs['namespace'] }}
+            echo location: ${{ steps.read_action_js.outputs['location'] }}
+            echo environment: ${{ steps.read_action_js.outputs['environment'] }}
+            echo resource_group_name: ${{ steps.read_action_js.outputs['resource_group_name'] }}
+
+      - name: Ping helm repo it returns 200
+        run: |
+          echo "${{ steps.read_action_js.outputs['spec.repoURL'] }}dev/${{ steps.read_action_js.outputs['spec.chart'] }}-${{ steps.read_action_js.outputs['spec.targetRevision'] }}"
+          url="${{ steps.read_action_js.outputs['spec.repoURL'] }}dev/${{ steps.read_action_js.outputs['spec.chart'] }}-${{ steps.read_action_js.outputs['spec.targetRevision'] }}"
+          max_attempts=10
+          attempt=1
+          sleep_duration=2
+
+          while [ $attempt -le $max_attempts ]; do
+            echo "Attempt $attempt: Pinging $url..."
+            response_code=$(curl -s -o /dev/null -w "%{http_code}" "$url")
+
+            if [ "$response_code" -eq 200 ]; then
+              echo "Success: Received HTTP 200!"
+              exit 0
+            else
+              echo "Failed: Received HTTP $response_code. Retrying in $sleep_duration seconds..."
+              sleep $sleep_duration
+              attempt=$((attempt + 1))
+            fi
+          done
+
+          echo "Error: Max attempts reached. Exiting."
+          exit 1
+
+#      - name: Trigger ArgoCD Sync
+#        env:
+#          ARGOCD_SERVER: ${{ vars.ARGOCD_SERVER }}
+#          ARGOCD_TOKEN: ${{ secrets.ARGOCD_TOKEN }}
+#          ARGOCD_APP_NAME: ${{ vars.ARGOCD_DEV_APP_NAME }}
+#        run: |
+#          response_code=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+#            -H "Authorization: Bearer $ARGOCD_TOKEN" \
+#            -H "Content-Type: application/json" \
+#            "$ARGOCD_SERVER/api/v1/applications/$ARGOCD_APP_NAME/sync" \
+#            -d '{}')
+#
+#          if [ "$response_code" -ne 200 ]; then
+#            echo "Error: ArgoCD sync failed with HTTP status code $response_code"
+#            exit 1
+#          else
+#            echo "ArgoCD sync triggered successfully"
+#          fi
