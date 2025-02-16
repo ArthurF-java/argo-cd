@@ -29,14 +29,7 @@ jobs:
         uses: pietrobolcato/action-read-yaml@1.0.0
         id: read_action_js
         with:
-          config: ${{ github.workspace }}/examples/config_example.yaml
-
-      - name: use-yaml-file
-          run: |
-            echo namespace: ${{ steps.read_action_js.outputs['namespace'] }}
-            echo location: ${{ steps.read_action_js.outputs['location'] }}
-            echo environment: ${{ steps.read_action_js.outputs['environment'] }}
-            echo resource_group_name: ${{ steps.read_action_js.outputs['resource_group_name'] }}
+          config: dev/application.yaml
 
       - name: Ping helm repo it returns 200
         run: |
