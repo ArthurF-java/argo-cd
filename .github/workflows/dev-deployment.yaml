@@ -30,13 +30,7 @@ jobs:
         uses: christian-ci/action-yaml-github-output@v2
         with:
           file_path: path/to/settings.yaml
-          main_key: regions
-          sub_key: spec
-
-      - name: Print Outputs
-        run: |
-          echo "Cluster Name: ${{ steps.yaml-output.outputs.cluster-name }}"
-          echo "App Name: ${{ steps.yaml-output.outputs.app-name }}"
+          main_key: spec
 
       - name: Ping helm repo it returns 200
         run: |
