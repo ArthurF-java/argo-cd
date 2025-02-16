@@ -29,7 +29,7 @@ jobs:
         uses: pietrobolcato/action-read-yaml@1.0.0
         id: read_action_js
         with:
-          config: dev/application.yaml
+          config: ${{ github.workspace }}/dev/application.yaml
 
       - name: Ping helm repo it returns 200
         run: |
