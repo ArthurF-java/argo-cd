@@ -25,9 +25,15 @@ jobs:
           ARGOCD_TOKEN: ${{ secrets.ARGOCD_TOKEN }}
           ARGOCD_APP_NAME: ${{ vars.ARGOCD_DEV_APP_NAME }}
         run: |
-          # Trigger ArgoCD sync using the API
-          curl -X POST \
+          response_code=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
             -H "Authorization: Bearer $ARGOCD_TOKEN" \
             -H "Content-Type: application/json" \
             "$ARGOCD_SERVER/api/v1/applications/$ARGOCD_APP_NAME/sync" \
-            -d '{}'
+            -d '{}')
+
+          if [ "$response_code" -ne 200 ]; then
+            echo "Error: ArgoCD sync failed with HTTP status code $response_code"
+            exit 1
+          else
+            echo "ArgoCD sync triggered successfully"
+          fi
