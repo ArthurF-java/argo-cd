@@ -1,11 +1,17 @@
 name: Trigger ArgoCD Sync
 
+#on:
+#  push:
+#    branches:
+#      - main
+#    paths:
+#      - 'dev/**'
+
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'dev/**'
+  workflow_dispatch:
+    inputs:
+      button_name:
+        description: 'Setup KinD'
 
 jobs:
   trigger-argocd:
