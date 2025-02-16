@@ -31,7 +31,7 @@ jobs:
 
       - name: Trigger ArgoCD Sync
         env:
-          ARGOCD_SERVER: argocd.k8s-15
+          ARGOCD_SERVER: argocd.k8s-15.sa
           ARGOCD_TOKEN: ${{ secrets.ARGOCD_TOKEN }}
           ARGOCD_APP_NAME: dev-be-root
         run: |
