@@ -35,9 +35,9 @@ jobs:
       - name: Ping helm repo it returns 200
         run: |
           url="${{ steps.yaml-output.outputs.repoURL }}test/${{ steps.yaml-output.outputs.chart }}-${{ steps.yaml-output.outputs.targetRevision }}".tgz
-          max_attempts=10
+          max_attempts=20
           attempt=1
-          sleep_duration=3
+          sleep_duration=5
 
           while [ $attempt -le $max_attempts ]; do
             echo "Attempt $attempt: Pinging $url..."
