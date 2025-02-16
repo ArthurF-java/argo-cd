@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: test-beproject
+  namespace: argocd
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    chart: beproject
+    repoURL: https://arthurf-java.github.io/helm-be/
+    targetRevision: 1-test-8c4018e247d633fac0bc1c29e4aed5b89f91c228
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - Replace=true
