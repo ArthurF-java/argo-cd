@@ -1,11 +1,11 @@
-name: Dev Actions
+name: Prod Actions
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'dev/**'
+      - 'prod/**'
 
 #on:
 #  workflow_dispatch:
@@ -29,12 +29,12 @@ jobs:
         id: yaml-output
         uses: christian-ci/action-yaml-github-output@v2
         with:
-          file_path: dev/application.yaml
+          file_path: prod/application.yaml
           main_key: spec
 
       - name: Ping helm repo it returns 200
         run: |
-          url="${{ steps.yaml-output.outputs.repoURL }}dev/${{ steps.yaml-output.outputs.chart }}-${{ steps.yaml-output.outputs.targetRevision }}".tgz
+          url="${{ steps.yaml-output.outputs.repoURL }}prod/${{ steps.yaml-output.outputs.chart }}-${{ steps.yaml-output.outputs.targetRevision }}".tgz
           max_attempts=10
           attempt=1
           sleep_duration=3
@@ -60,7 +60,7 @@ jobs:
         env:
           ARGOCD_SERVER: ${{ vars.ARGOCD_SERVER }}
           ARGOCD_TOKEN: ${{ secrets.ARGOCD_TOKEN }}
-          ARGOCD_APP_NAME: ${{ vars.ARGOCD_DEV_APP_NAME }}
+          ARGOCD_APP_NAME: ${{ vars.ARGOCD_PROD_APP_NAME }}
         run: |
           response_code=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
             -H "Authorization: Bearer $ARGOCD_TOKEN" \
