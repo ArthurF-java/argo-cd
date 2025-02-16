@@ -35,7 +35,7 @@ jobs:
       - name: Ping helm repo it returns 200
         run: |
           echo "${{ steps.yaml-output.outputs.repoURL }}dev/${{ steps.yaml-output.outputs.chart }}-${{ steps.yaml-output.outputs.targetRevision }}"
-          url="${{ steps.yaml-output.outputs.repoURL }}dev/${{ steps.yaml-output.outputs.chart }}-${{ steps.yaml-output.outputs.targetRevision }}"
+          url="${{ steps.yaml-output.outputs.repoURL }}dev/${{ steps.yaml-output.outputs.chart }}-${{ steps.yaml-output.outputs.targetRevision }}".tgz
           max_attempts=10
           attempt=1
           sleep_duration=2
