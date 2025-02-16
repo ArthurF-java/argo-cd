@@ -38,7 +38,7 @@ jobs:
           url="${{ steps.yaml-output.outputs.repoURL }}dev/${{ steps.yaml-output.outputs.chart }}-${{ steps.yaml-output.outputs.targetRevision }}".tgz
           max_attempts=10
           attempt=1
-          sleep_duration=2
+          sleep_duration=3
 
           while [ $attempt -le $max_attempts ]; do
             echo "Attempt $attempt: Pinging $url..."
