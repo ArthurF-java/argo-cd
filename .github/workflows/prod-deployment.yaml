@@ -58,7 +58,7 @@ jobs:
           SLACK_COLOR: ${{ job.status }}
           SLACK_ICON: https://github.com/rtCamp.png?size=48
           SLACK_MESSAGE: 'Post Content :rocket:'
-          SLACK_TITLE: 'ArgoCD Sync is done for image ${{ steps.yaml-output.outputs.targetRevision }}'
+          SLACK_TITLE: 'ArgoCD Sync PROD is done for image ${{ steps.yaml-output.outputs.targetRevision }}'
           SLACK_USERNAME: fonichkin
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
@@ -69,6 +69,6 @@ jobs:
           SLACK_CHANNEL: afon-check
           SLACK_COLOR: ${{ job.status }}
           SLACK_ICON: https://github.com/rtCamp.png?size=48
-          SLACK_TITLE: 'ArgoCD Sync is failed for image ${{ steps.yaml-output.outputs.targetRevision }}'
+          SLACK_TITLE: 'ArgoCD Sync PROD is failed for image ${{ steps.yaml-output.outputs.targetRevision }}'
           SLACK_USERNAME: fonichkin
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
