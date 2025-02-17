@@ -25,6 +25,13 @@ jobs:
         run: |
           echo "178.124.206.53	argocd.k8s-15.sa" | sudo tee -a /etc/hosts
 
+      - name: Run YAML to Github Output Action
+        id: yaml-output
+        uses: christian-ci/action-yaml-github-output@v2
+        with:
+          file_path: dev/application.yaml
+          main_key: spec
+
       - name: Trigger ArgoCD Sync
         env:
           ARGOCD_SERVER: ${{ vars.ARGOCD_SERVER }}
@@ -43,3 +50,26 @@ jobs:
           else
             echo "ArgoCD sync triggered successfully"
           fi
+
+      - name: Slack Notification
+        if: success()
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_CHANNEL: afon-check
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_ICON: https://github.com/rtCamp.png?size=48
+          SLACK_MESSAGE: 'Post Content :rocket:'
+          SLACK_TITLE: 'ArgoCD Sync is done for image ${{ steps.yaml-output.outputs.targetRevision }}'
+          SLACK_USERNAME: fonichkin
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+
+      - name: Slack Notification
+        if: failure()
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_CHANNEL: afon-check
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_ICON: https://github.com/rtCamp.png?size=48
+          SLACK_TITLE: 'ArgoCD Sync is failed for image ${{ steps.yaml-output.outputs.targetRevision }}'
+          SLACK_USERNAME: fonichkin
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
