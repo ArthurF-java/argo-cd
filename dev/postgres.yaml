@@ -3,7 +3,6 @@ kind: Application
 metadata:
   name: postgres-prod
   namespace: argocd
-  uid: e857d961-e380-49e4-a94c-a6fa8c4edb16
 spec:
   destination:
     server: https://kubernetes.default.svc
