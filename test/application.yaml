@@ -10,7 +10,7 @@ spec:
   source:
     chart: beproject
     repoURL: https://arthurf-java.github.io/helm-be/
-    targetRevision: 1-test-16b3de70215fa7cf09cf18018900bb18bb685e4f
+    targetRevision: 1-test-9b7f77a1c1458180aebf39a49007b42119bede46
   syncPolicy:
     automated:
       prune: true
